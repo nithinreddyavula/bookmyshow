@@ -2,6 +2,7 @@ package com.nithin.bookmyshow.service;
 
 
 
+import com.nithin.bookmyshow.dto.AuthResponse;
 import com.nithin.bookmyshow.dto.LoginRequest;
 import com.nithin.bookmyshow.dto.RegisterRequest;
 import com.nithin.bookmyshow.model.User;
@@ -37,20 +38,14 @@ public class UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
-    public String loginUser(LoginRequest request) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUserEmail(),
-                            request.getPassword()
-                    )
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid email or password");
-        }
-
-        return jwtUtil.generateToken(request.getUserEmail());
+    public AuthResponse loginUser(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUserEmail(),
+                        request.getPassword()
+                )
+        );
+        String token = jwtUtil.generateToken(request.getUserEmail());
+        return new AuthResponse(token, "Login successful");
     }
-
-
 }
