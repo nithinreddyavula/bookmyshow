@@ -2,10 +2,14 @@ package com.nithin.bookmyshow.service;
 
 
 
+import com.nithin.bookmyshow.dto.LoginRequest;
 import com.nithin.bookmyshow.dto.RegisterRequest;
 import com.nithin.bookmyshow.model.User;
 import com.nithin.bookmyshow.repository.UserRepository;
+import com.nithin.bookmyshow.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +31,25 @@ public class UserService {
         userRepository.save(user);
         return  "Successfully Registered";
 
+    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+    public String loginUser(LoginRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUserEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        return jwtUtil.generateToken(request.getUserEmail());
     }
 
 

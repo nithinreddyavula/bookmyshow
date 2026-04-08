@@ -1,5 +1,6 @@
 package com.nithin.bookmyshow.controller;
 
+import com.nithin.bookmyshow.dto.LoginRequest;
 import com.nithin.bookmyshow.dto.RegisterRequest;
 import com.nithin.bookmyshow.service.UserService;
 
@@ -19,5 +20,10 @@ public class AuthController {
     public ResponseEntity<String> newUser(@RequestBody @Valid RegisterRequest request) {
         String message = userService.registerUser(request);
         return ResponseEntity.status(201).body(message);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
+        String token = userService.loginUser(request);
+        return ResponseEntity.ok(token);
     }
 }
