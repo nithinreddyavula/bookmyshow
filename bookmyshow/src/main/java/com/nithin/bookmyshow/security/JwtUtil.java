@@ -42,6 +42,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token, String email) {
         String extractedEmail = extractEmail(token);
+
         return extractedEmail.equals(email);
     }
 }

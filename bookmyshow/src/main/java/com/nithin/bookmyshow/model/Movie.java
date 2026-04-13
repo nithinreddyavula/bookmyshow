@@ -3,10 +3,12 @@ package com.nithin.bookmyshow.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "movie")
 @Data
-public class Movie {
+public class Movie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

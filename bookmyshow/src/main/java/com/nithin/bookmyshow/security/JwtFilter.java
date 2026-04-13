@@ -24,11 +24,13 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        System.out.println("AUTH HEADER: " + request.getHeader("Authorization"));
 
         String authHeader = request.getHeader("Authorization");
 
@@ -38,16 +40,22 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
         String email = jwtUtil.extractEmail(token);
+
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            //System.out.println("EXTRACTED EMAIL: " + email);
+            //System.out.println("USERDETAILS USERNAME: " + userDetails.getUsername());
+            //System.out.println("VALIDATE RESULT: " + jwtUtil.validateToken(token, userDetails.getUsername()));
 
             if (jwtUtil.validateToken(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
                         );
+                //System.out.println("AUTHENTICATION SET: " + SecurityContextHolder.getContext().getAuthentication());
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
