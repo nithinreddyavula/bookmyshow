@@ -1,12 +1,17 @@
 package com.nithin.bookmyshow.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "seats")
-@Data
-public class Seat {
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Seat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +22,9 @@ public class Seat {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SeatType seatType;
-    private boolean isSeated;
+    private boolean isBooked;
+    @Version
+    private int version;
     @ManyToOne
     @JoinColumn(name = "show_id")
     private Show show;
