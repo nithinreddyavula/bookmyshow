@@ -3,8 +3,10 @@ package com.nithin.bookmyshow.repository;
 import com.nithin.bookmyshow.model.Show;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ShowRepository extends JpaRepository<Show , Long> {
     List<Show> findByMovie_id(Long movieId);
+    boolean existsByScreenIdAndStartTime(Long screenId, LocalDateTime startTime);
 }

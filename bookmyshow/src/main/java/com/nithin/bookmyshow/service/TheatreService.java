@@ -1,6 +1,7 @@
 package com.nithin.bookmyshow.service;
 
 
+import com.nithin.bookmyshow.dto.TheatreRequest;
 import com.nithin.bookmyshow.model.Theatre;
 import com.nithin.bookmyshow.repository.TheatreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ public class TheatreService {
         theatre.setTheatreCity(request.getTheatreCity());
         theatre.setTheatrePincode(request.getTheatrePincode());
         theatre.setContactNumber(request.getContactNumber());
-        theatre.setScreens(request.getScreens());
         return theatreRepository.save(theatre);
     }
     public List<Theatre> getAllTheatres() {

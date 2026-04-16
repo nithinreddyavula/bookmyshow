@@ -1,6 +1,7 @@
 package com.nithin.bookmyshow.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Screen implements Serializable {
     @ManyToOne
     @JoinColumn(name="theatre_id")
     private Theatre theatre;
-    @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
-    private List<Show> shows;
+    @JsonIgnore
+    @OneToMany(mappedBy = "theatre")
+    private List<Screen> screens;
 }
