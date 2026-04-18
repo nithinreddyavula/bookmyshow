@@ -78,6 +78,13 @@ public class BookingService {
             bookingRepository.save(booking);
         }
         redisTemplate.delete("seat_lock:" + seatId);
+    }public void cancelBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        Long seatId = booking.getSeat().getId();
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+        redisTemplate.delete("seat_lock:" + seatId);
     }
 
     }
