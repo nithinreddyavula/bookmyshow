@@ -69,4 +69,15 @@ public class BookingService {
             throw e;
         }
     }
+    public void confirmBooking(Long bookingId, boolean paymentSuccess) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        Long seatId = booking.getSeat().getId();
+        if (paymentSuccess) {
+            booking.setBookingStatus(BookingStatus.CONFIRMED);
+            bookingRepository.save(booking);
+        }
+        redisTemplate.delete("seat_lock:" + seatId);
+    }
+
     }
