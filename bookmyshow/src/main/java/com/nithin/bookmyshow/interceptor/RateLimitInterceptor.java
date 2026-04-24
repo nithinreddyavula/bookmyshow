@@ -23,10 +23,15 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authHeader = request.getHeader("Authorization");
-        String token = (authHeader != null && authHeader.startsWith("Bearer "))
-                ? authHeader.substring(7) : null;
-        String userId = jwtUtil.extractEmail(token);
-        String key = "rate_limit:" + userId;
+        String userKey;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            userKey = jwtUtil.extractEmail(token);
+        } else {
+            userKey = request.getRemoteAddr();
+        }
+        String key = "rate_limit:" + userKey;
         int capacity = 10;
         int refillRate = 1;
 
@@ -51,7 +56,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         }
 
         if (tokens <= 0) {
-            response.setStatus(429);
+            response.getWriter().write("Rate limit exceeded. Please try again later.");
             return false;
         }
 

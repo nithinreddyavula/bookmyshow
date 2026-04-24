@@ -28,7 +28,4 @@ public class Screen implements Serializable {
     @ManyToOne
     @JoinColumn(name="theatre_id")
     private Theatre theatre;
-    @JsonIgnore
-    @OneToMany(mappedBy = "theatre")
-    private List<Screen> screens;
 }
