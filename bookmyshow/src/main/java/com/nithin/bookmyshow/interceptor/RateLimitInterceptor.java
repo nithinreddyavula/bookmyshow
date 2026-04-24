@@ -22,6 +22,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String authHeader = request.getHeader("Authorization");
         String userKey;
 
@@ -31,9 +32,10 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         } else {
             userKey = request.getRemoteAddr();
         }
+
         String key = "rate_limit:" + userKey;
-        int capacity = 10;
-        int refillRate = 1;
+        int capacity = 3;
+        //int refillTokens = (int) (timePassed / 10);
 
         long now = System.currentTimeMillis() / 1000;
 
@@ -44,18 +46,16 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
         if (value != null) {
             String[] parts = value.split(":");
-
             tokens = Integer.parseInt(parts[0]);
             lastRefill = Long.parseLong(parts[1]);
-
-            long timePassed = now - lastRefill;
-
-            int refill = (int) (timePassed * refillRate);
-
-            tokens = Math.min(capacity, tokens + refill);
+            long timePassed = now - lastRefill; //error cannot resolev
+            int refillTokens = (int) (timePassed / 10);
+            tokens = Math.min(capacity, tokens + refillTokens);
         }
+        System.out.println("Rate limit key: " + key + " | Tokens: " + tokens);
 
         if (tokens <= 0) {
+            response.setStatus(429);
             response.getWriter().write("Rate limit exceeded. Please try again later.");
             return false;
         }
